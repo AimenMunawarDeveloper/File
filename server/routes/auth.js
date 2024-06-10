@@ -1,3 +1,4 @@
+// auth.js
 const express = require("express");
 const router = express.Router();
 const { User } = require("../models/userModel");
@@ -26,13 +27,15 @@ router.post("/", async (req, res) => {
     if (!validPassword) {
       return res.status(401).send({ message: "Invalid Email or Password." });
     }
+
+    // Generate JWT token
     const token = jwt.sign(
       { userId: user._id, tenantId: user.tenantId },
-      "my_secret_key",
+      "my_secret_key", // Replace "my_secret_key" with your actual secret key
       { expiresIn: "7d" }
     );
 
-    console.log("Generated token:", token);
+    console.log("Generated token:", token); // Log the generated token
 
     res.status(200).send({ data: token, message: "Logged in successfully." });
   } catch (error) {

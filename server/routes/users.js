@@ -39,7 +39,7 @@ router.post("/", async (req, res) => {
     }).save();
     res.status(201).send({ message: "User created successfully." });
   } catch (error) {
-    console.error("Error creating user:", error);
+    console.error("Error creating user:", error); // Log the detailed error
     res.status(500).send({ message: "Internal Server Error." });
   }
 });

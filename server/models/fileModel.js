@@ -19,6 +19,10 @@ const fileSchema = new mongoose.Schema({
     ref: "Tenant",
     required: true,
   },
+  url: {
+    type: String,
+    required: true,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
