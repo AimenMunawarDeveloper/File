@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import {
-  LineChart,
-  Line,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -68,8 +68,11 @@ const Main = () => {
       } catch (error) {
         console.error("Error fetching recent files:", error);
       }
-  }});
+    };
 
+    fetchStats();
+    fetchRecentFiles();
+  }, []);
 
   // Function to get month name from month number
   const getMonthName = (monthNumber) => {
@@ -101,7 +104,7 @@ const Main = () => {
         <Link to="/personal-storage" className="block hover:text-indigo-400" onClick={closeNav}>Add File</Link>
       </li>
       <li className="mb-2">
-        <Link to="/add-account" className="block hover:text-indigo-400" onClick={closeNav}>Add Account</Link>
+        <Link to="/" className="block hover:text-indigo-400" onClick={closeNav}>Edit Profile</Link>
       </li>
       <li className="mb-2">
         <button onClick={handleLogout} className="block hover:text-indigo-400">Logout</button>
@@ -130,7 +133,7 @@ const Main = () => {
           <h2 className="text-xl font-bold mb-2 mt-2">Number of files uploaded each month</h2>
           <div className="container mx-auto px-4 py-8 mt-8">
             <ResponsiveContainer width="100%" height={400}>
-              <LineChart data={fileStats.map((stat) => ({
+              <BarChart data={fileStats.map((stat) => ({
                 month: `${getMonthName(stat._id.month)} ${stat._id.year}`,
                 fileCount: stat.count, 
               }))}>
@@ -139,8 +142,8 @@ const Main = () => {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Line type="monotone" dataKey="fileCount" stroke="rgba(103, 58, 183, 1)" fill="rgba(103, 58, 183, 0.2)" />
-              </LineChart>
+                <Bar dataKey="fileCount" fill="#7E57C2" barSize={20} />
+              </BarChart>
             </ResponsiveContainer>
           </div>
           <div>
