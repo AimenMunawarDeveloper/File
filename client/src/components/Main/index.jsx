@@ -104,7 +104,7 @@ const Main = () => {
         <Link to="/personal-storage" className="block hover:text-indigo-400" onClick={closeNav}>Add File</Link>
       </li>
       <li className="mb-2">
-        <Link to="/" className="block hover:text-indigo-400" onClick={closeNav}>Edit Profile</Link>
+        <Link to="/profile" className="block hover:text-indigo-400" onClick={closeNav}>Edit Profile</Link>
       </li>
       <li className="mb-2">
         <button onClick={handleLogout} className="block hover:text-indigo-400">Logout</button>

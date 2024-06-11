@@ -4,6 +4,7 @@ const router = express.Router();
 const { User, validate } = require("../models/userModel");
 const Tenant = require("../models/tenantModel");
 const bcrypt = require("bcrypt");
+const { Profile } = require("../models/profileModel");
 
 router.post("/", async (req, res) => {
   try {
@@ -32,12 +33,40 @@ router.post("/", async (req, res) => {
     const salt = await bcrypt.genSalt(Number(process.env.SALT));
     const hashPassword = await bcrypt.hash(req.body.password, salt);
 
-    await new User({
+    const newUser = await new User({
       ...req.body,
       password: hashPassword,
       tenantId: defaultTenantId,
     }).save();
-    res.status(201).send({ message: "User created successfully." });
+
+    // Create default profile for the user
+    const { firstName, lastName, email } = req.body;
+    const fullName = `${firstName} ${lastName}`;
+
+    const profile = new Profile({
+      fullName,
+      phoneNumber: "", // Set default or leave empty as needed
+      email,
+      username: "", // Set default or leave empty as needed
+      bio: "", // Set default or leave empty as needed
+      photo: "", // Set default or leave empty as needed
+      user: newUser._id,
+      tenant: defaultTenantId,
+    });
+    console.log("Creating profile:", profile);
+
+    await profile.save();
+    console.log("Created profile:", profile);
+
+    // Fetch the newly created profile and send it in the response
+    const newProfile = await Profile.findOne({ user: newUser._id });
+    if (!newProfile) {
+      return res
+        .status(500)
+        .send({ message: "Failed to create profile for the user." });
+    }
+
+    res.status(201).send({ message: "User created successfully.", profile });
   } catch (error) {
     console.error("Error creating user:", error); // Log the detailed error
     res.status(500).send({ message: "Internal Server Error." });

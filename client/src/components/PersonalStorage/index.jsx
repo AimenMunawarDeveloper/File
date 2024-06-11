@@ -135,7 +135,7 @@ const PersonalStorage = () => {
           <div className="text-white font-bold text-3xl mb-4 lg:mb-0">User Storage</div>
           <div className="lg:flex flex-col lg:flex-row lg:space-x-4 lg:mt-0 mt-4 flex flex-col items-center text-xl">
             <a href="/" className="text-white  px-4 py-2 hover:text-purple-600 ">Dashboard</a>
-            <a href="/" className="text-white  px-4 py-2 hover:text-purple-600 ">Edit Account</a>
+            <a href="/profile" className="text-white  px-4 py-2 hover:text-purple-600 ">Edit Account</a>
             <button
             className="bg-purple-600 text-white font-bold py-2 px-4 rounded border border-purple-600 hover:bg-purple-800 focus:outline-none focus:shadow-outline"
             onClick={() => setShowUploadPopup(true)}

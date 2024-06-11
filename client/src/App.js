@@ -3,6 +3,7 @@ import Main from "./components/Main";
 import Signup from "./components/Signup";
 import Login from "./components/Login";
 import PersonalStorage from "./components/PersonalStorage";
+import Profile from "./components/Profile";
 import "./index.css";
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
       <Route path="/login" exact element={<Login />} />
       <Route path="/" element={<Navigate replace to="/login" />} />
       <Route path="/personal-storage" element={<PersonalStorage />} />
+      <Route path="/profile" element={<Profile />} />
     </Routes>
   );
 }
