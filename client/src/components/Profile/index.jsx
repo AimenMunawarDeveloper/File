@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useDropzone } from 'react-dropzone';
 import { Image } from 'cloudinary-react';
+import { Link ,useNavigate} from "react-router-dom";
 
 const Profile = () => {
   const [profileData, setProfileData] = useState({});
@@ -9,7 +10,8 @@ const Profile = () => {
   const [formData, setFormData] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
   const [selectedFile, setSelectedFile] = useState(null); // State to store selected file
-
+  const [sidepanelOpen, setSidepanelOpen] = useState(false);
+  const navigate = useNavigate();
   const token = localStorage.getItem('token');
 
   const fetchProfileData = async () => {
@@ -36,6 +38,14 @@ const Profile = () => {
 
   const handleEdit = () => {
     setEditMode(true);
+  };
+
+  const handleLogout = (e) => {
+    e.preventDefault();
+    console.log('Logging out...');
+    localStorage.removeItem("token");
+    navigate("/login"); // Redirect to login page
+    window.location.reload();
   };
 
   const handleChange = (e) => {
@@ -96,106 +106,156 @@ const Profile = () => {
     }
   };
 
+  const openNav = () => {
+    setSidepanelOpen(!sidepanelOpen);
+  };
+
+  const closeNav = () => {
+    setSidepanelOpen(false);
+  };
+
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
+
   return (
-    <section className="py-10 my-auto dark:bg-gray-900">
-      <div className="lg:w-[80%] md:w-[90%] xs:w-[96%] mx-auto flex gap-4">
-        <div className="lg:w-[88%] md:w-[80%] sm:w-[88%] xs:w-full mx-auto shadow-2xl p-4 rounded-xl h-fit self-center dark:bg-gray-800/40">
-          <div>
+    <section className="my-auto dark:bg-gray-900">
+      <div className="flex">
+        {/* Sidebar */}
+        <div className={`bg-gray-800 text-white transition-width duration-300 ease-in-out ${sidepanelOpen ? 'w-56' : 'w-0'} overflow-hidden`}>
+          <div className="p-4">
+            <h1 className="text-2xl font-semibold">Sidebar</h1>
+            <ul className="mt-4 space-y-5">
+              <li className="mb-2">
+                <Link to="/" className="block hover:text-indigo-400" onClick={closeNav}>Dashboard</Link>
+              </li>
+              <li className="mb-2">
+                <Link to="/personal-storage" className="block hover:text-indigo-400" onClick={closeNav}>Add File</Link>
+              </li>
+              <li className="mb-2">
+                <Link to="/profile" className="block hover:text-indigo-400" onClick={closeNav}>Edit Profile</Link>
+              </li>
+              <li className="mb-2">
+                <button onClick={handleLogout} className="block hover:text-indigo-400">Logout</button>
+              </li>
+            </ul>
+          </div>
+        </div>
+        {/* Main content */}
+        <div className="flex-1 p-6">
+          <button className="text-gray-500 hover:text-gray-600 mb-4" onClick={openNav}>
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
           <h1 className="lg:text-3xl md:text-2xl sm:text-xl xs:text-xl font-serif font-extrabold mb-2 dark:text-white">Profile</h1>
-            {successMessage && (
-              <div className="absolute top-8 right-4 z-50 bg-white p-4 rounded-lg shadow-md">
-                <p className="text-purple-600">{successMessage}</p>
+          {successMessage && (
+            <div className="absolute top-8 right-4 z-50 bg-white p-4 rounded-lg shadow-md">
+              <p className="text-purple-600">{successMessage}</p>
+            </div>
+          )}
+          <div className="relative">
+            {editMode && (
+              <div {...getRootProps()} className="cursor-pointer">
+                <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center mx-auto relative">
+                  <div className="w-12 h-12 bg-blue rounded-full flex items-center justify-center absolute bottom-2 right-2">
+                  <button className="text-black-500 hover:text-black-600 relative mt-10 ml-4" onClick={openNav}>
+  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    {/* Add a circle around the plus sign */}
+    <circle cx="12" cy="12" r="10" fill="white" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v12M6 12h12" />
+  </svg>
+</button>
+                  </div>
+                  {profileData.photo ? (
+                    <Image cloudName="dxwhmwlqo" publicId={profileData.photo} />
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                  )}
+                </div>
+                <input {...getInputProps()} />
               </div>
             )}
-              <div className="relative">
-              <div className="relative">
-  <div className="relative">
-    <div className="relative">
-      <div className="relative">
-        {editMode && (
-          <div {...getRootProps()}>
-            <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center mx-auto relative">
-              <div className="w-12 h-12 bg-blue rounded-full flex items-center justify-center absolute bottom-2 right-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="12" y1="5" x2="12" y2="19"></line>
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                </svg>
+            {!editMode && (
+              <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center mx-auto relative">
+                {profileData.photo ? (
+                  <Image cloudName="dxwhmwlqo" publicId={profileData.photo} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                )}
               </div>
-              {profileData.photo ? (
-                <Image cloudName="dxwhmwlqo" publicId={profileData.photo} />
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="12" cy="7" r="4"></circle>
-                </svg>
-              )}
-            </div>
-            <input {...getInputProps()} />
+            )}
+            {!editMode && (
+              <button onClick={handleEdit} className="absolute bottom-4 right-4 px-4 py-2 bg-purple-500 text-white rounded-lg">Edit</button>
+            )}
           </div>
-        )}
-        {!editMode && (
-  <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center mx-auto relative">
-    {profileData.photo ? (
-       <Image cloudName="dxwhmwlqo" publicId={profileData.photo} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-    ) : (
-      <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-        <circle cx="12" cy="7" r="4"></circle>
-      </svg>
-    )}
-  </div>
-)}
-        {!editMode && <button onClick={handleEdit} className="absolute bottom-4 right-4 px-4 py-2 bg-purple-500 text-white rounded-lg">Edit</button>}
-      </div>
-    </div>
-</div>
-</div>
-  {!editMode && <button onClick={handleEdit} className="absolute bottom-4 right-4 px-4 py-2 bg-purple-500 text-white rounded-lg">Edit</button>}
-</div>
-            <div className="mt-4">
-              <label className="block dark:text-gray-300">Full Name</label>
-              {editMode ? (
-                <input 
-                  type="text" 
-                  name="fullName" 
-                  className="mt-2 p-4 w-full border-2 rounded-lg dark:text-gray-200 dark:border-gray-600 dark:bg-gray-800" 
-                  value={formData.fullName} 
-                  onChange={handleChange} 
-                />
-              ) : (
-                <p className="mt-2 p-4 w-full border-2 rounded-lg dark:text-gray-200 dark:border-gray-600 dark:bg-gray-800">{formData.fullName}</p>
-              )}
-            </div>
-            <div className="mt-4">
-              <label className="block dark:text-gray-300">User name</label>
+          <div className="mt-4">
+            <label className="block dark:text-gray-300">Full Name</label>
+            {editMode ? (
               <input 
                 type="text" 
-                name="username" 
+                name="fullName" 
                 className="mt-2 p-4 w-full border-2 rounded-lg dark:text-gray-200 dark:border-gray-600 dark:bg-gray-800" 
-                value={formData.username} 
+                value={formData.fullName} 
                 onChange={handleChange} 
-                readOnly={!editMode} // Make this field read-only when edit mode is false
               />
-            </div>
-            <div className="mt-4">
-              <label className="block dark:text-gray-300">Email</label>
-              <input type="text" name="email" className="mt-2 p-4 w-full border-2 rounded-lg dark:text-gray-200 dark:border-gray-600 dark:bg-gray-800" value={formData.email} onChange={handleChange} readOnly={!editMode} />
-            </div>
-            <div className="mt-4">
-              <label className="block dark:text-gray-300">Phone Number</label>
-              <input type="text" name="phoneNumber" className="mt-2 p-4 w-full border-2 rounded-lg dark:text-gray-200 dark:border-gray-600 dark:bg-gray-800" value={formData.phoneNumber} onChange={handleChange} readOnly={!editMode} />
-            </div>
-            <div className="mt-4">
-              <label className="block dark:text-gray-300">Bio</label>
-              <input type="text" name="bio" className="mt-2 p-4 w-full border-2 rounded-lg dark:text-gray-200 dark:border-gray-600 dark:bg-gray-800" value={formData.bio} onChange={handleChange} readOnly={!editMode} />
-            </div>
-            {editMode && (
-              <div className="mt-4">
-                <button onClick={handleSubmit} className="px-4 py-2 bg-purple-500 text-white rounded-lg">Save</button>
-              </div>
+            ) : (
+              <p className="mt-2 p-4 w-full border-2 rounded-lg dark:text-gray-200 dark:border-gray-600 dark:bg-gray-800">{formData.fullName}</p>
             )}
           </div>
+          <div className="mt-4">
+            <label className="block dark:text-gray-300">Username</label>
+            <input 
+              type="text" 
+              name="username" 
+              className="mt-2 p-4 w-full border-2 rounded-lg dark:text-gray-200 dark:border-gray-600 dark:bg-gray-800" 
+              value={formData.username} 
+              onChange={handleChange} 
+              readOnly={!editMode} // Make this field read-only when edit mode is false
+            />
+          </div>
+          <div className="mt-4">
+            <label className="block dark:text-gray-300">Email</label>
+            <input 
+              type="text" 
+              name="email" 
+              className="mt-2 p-4 w-full border-2 rounded-lg dark:text-gray-200 dark:border-gray-600 dark:bg-gray-800" 
+              value={formData.email} 
+              onChange={handleChange} 
+              readOnly={!editMode} 
+            />
+          </div>
+          <div className="mt-4">
+            <label className="block dark:text-gray-300">Phone Number</label>
+            <input 
+              type="text" 
+              name="phoneNumber" 
+              className="mt-2 p-4 w-full border-2 rounded-lg dark:text-gray-200 dark:border-gray-600 dark:bg-gray-800" 
+              value={formData.phoneNumber} 
+              onChange={handleChange} 
+              readOnly={!editMode} 
+            />
+          </div>
+          <div className="mt-4">
+            <label className="block dark:text-gray-300">Bio</label>
+            <input 
+              type="text" 
+              name="bio" 
+              className="mt-2 p-4 w-full border-2 rounded-lg dark:text-gray-200 dark:border-gray-600 dark:bg-gray-800" 
+              value={formData.bio} 
+              onChange={handleChange} 
+              readOnly={!editMode} 
+            />
+          </div>
+          {editMode && (
+            <div className="mt-4">
+              <button onClick={handleSubmit} className="px-4 py-2 bg-purple-500 text-white rounded-lg">Save</button>
+            </div>
+          )}
         </div>
       </div>
     </section>

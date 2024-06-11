@@ -100,6 +100,9 @@ const Main = () => {
   <div className="p-4">
     <h1 className="text-2xl font-semibold">Sidebar</h1>
     <ul className="mt-4 space-y-5">
+    <li className="mb-2">
+              <Link to="/" className="block hover:text-indigo-400" onClick={closeNav}>Dashboard</Link>
+            </li>
       <li className="mb-2">
         <Link to="/personal-storage" className="block hover:text-indigo-400" onClick={closeNav}>Add File</Link>
       </li>
