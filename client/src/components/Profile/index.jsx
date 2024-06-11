@@ -11,6 +11,7 @@ const Profile = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [selectedFile, setSelectedFile] = useState(null); // State to store selected file
   const [sidepanelOpen, setSidepanelOpen] = useState(false);
+  const [phoneNumberValid, setPhoneNumberValid] = useState(true);
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
 
@@ -49,10 +50,33 @@ const Profile = () => {
   };
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    let isValid = true;
+  
+    switch (name) {
+      case 'phoneNumber':
+        // Perform validation for phone number
+        isValid = /^\d{10}$/.test(value.trim());
+        setPhoneNumberValid(isValid);
+        break;
+      default:
+        break;
+    }
+  
+    if (editMode) {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    // Check if phone number is valid
+    if (!phoneNumberValid) {
+      console.error('Invalid phone number');
+      return;
+    }
+  
     try {
       const formDataWithoutId = { ...formData };
       delete formDataWithoutId._id;
@@ -74,7 +98,7 @@ const Profile = () => {
       setTimeout(() => {
         setSuccessMessage("");
       }, 5000);
-          // Refetch the profile data after updating
+      // Refetch the profile data after updating
       fetchProfileData();
     } catch (error) {
       console.error('Error updating profile:', error);
@@ -113,6 +137,7 @@ const Profile = () => {
   const closeNav = () => {
     setSidepanelOpen(false);
   };
+  
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
@@ -141,11 +166,11 @@ const Profile = () => {
         </div>
         {/* Main content */}
         <div className="flex-1 p-6">
-          <button className="text-gray-500 hover:text-gray-600 mb-4" onClick={openNav}>
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>
-          </button>
+        <button className="text-gray-500 hover:text-gray-600 mb-4 ml-auto" onClick={openNav}>
+  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
+  </svg>
+</button>
           <h1 className="lg:text-3xl md:text-2xl sm:text-xl xs:text-xl font-serif font-extrabold mb-2 dark:text-white">Profile</h1>
           {successMessage && (
             <div className="absolute top-8 right-4 z-50 bg-white p-4 rounded-lg shadow-md">
@@ -166,7 +191,7 @@ const Profile = () => {
 </button>
                   </div>
                   {profileData.photo ? (
-                    <Image cloudName="dxwhmwlqo" publicId={profileData.photo} />
+                    <Image cloudName="dxwhmwlqo" publicId={profileData.photo} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : (
                     <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -230,16 +255,16 @@ const Profile = () => {
             />
           </div>
           <div className="mt-4">
-            <label className="block dark:text-gray-300">Phone Number</label>
-            <input 
-              type="text" 
-              name="phoneNumber" 
-              className="mt-2 p-4 w-full border-2 rounded-lg dark:text-gray-200 dark:border-gray-600 dark:bg-gray-800" 
-              value={formData.phoneNumber} 
-              onChange={handleChange} 
-              readOnly={!editMode} 
-            />
-          </div>
+  <label className="block dark:text-gray-300">Phone Number</label>
+  <input 
+    type="text" 
+    name="phoneNumber" 
+    className={`mt-2 p-4 w-full border-2 rounded-lg dark:text-gray-200 dark:border-gray-600 dark:bg-gray-800 ${!phoneNumberValid && 'border-red-500'}`} 
+    value={formData.phoneNumber} 
+    onChange={handleChange} 
+  />
+  {!phoneNumberValid && <p className="text-red-500">Please enter a valid phone number (10 digits)</p>}
+</div>
           <div className="mt-4">
             <label className="block dark:text-gray-300">Bio</label>
             <input 
