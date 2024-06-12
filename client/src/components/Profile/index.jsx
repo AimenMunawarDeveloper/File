@@ -142,7 +142,7 @@ const Profile = () => {
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   return (
-    <section className="my-auto dark:bg-gray-900">
+    <section className="my-auto min-h-screen dark:bg-gray-900">
       <div className="flex">
         {/* Sidebar */}
         <div className={`bg-gray-800 text-white transition-width duration-300 ease-in-out ${sidepanelOpen ? 'w-56' : 'w-0'} overflow-hidden`}>
@@ -251,7 +251,7 @@ const Profile = () => {
               className="mt-2 p-4 w-full border-2 rounded-lg dark:text-gray-200 dark:border-gray-600 dark:bg-gray-800" 
               value={formData.email} 
               onChange={handleChange} 
-              readOnly={!editMode} 
+              readOnly={true} 
             />
           </div>
           <div className="mt-4">
