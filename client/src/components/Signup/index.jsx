@@ -19,7 +19,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const url = "https://mern-vercel-sigma.vercel.app/api/users";
+      const url = "https://localhost:8080/api/users";
       const { data: res } = await axios.post(url, data);
       navigate("/login");
       console.log(res.message);
