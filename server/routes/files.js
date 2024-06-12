@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const auth = require("../middleware/auth");
-const File = require("../models/fileModel"); // Assuming you have a File model
+const File = require("../models/fileModel");
 const multer = require("multer");
 const AWS = require("aws-sdk");
 const mongoose = require("mongoose");
@@ -46,7 +46,6 @@ router.post("/", auth, upload.single("file"), async (req, res) => {
   } catch (error) {
     console.error("Error uploading file:", error);
 
-    // Cleanup: delete the file from S3 if it was uploaded
     if (uploadResult) {
       const params = {
         Bucket: process.env.AWS_BUCKET_NAME,
@@ -74,7 +73,6 @@ router.get("/", auth, async (req, res) => {
       tenant: new mongoose.Types.ObjectId(req.user.tenantId),
     });
 
-    // console.log("Fetched files:", files);
     res.status(200).send(files);
   } catch (error) {
     console.error("Error fetching files:", error);
@@ -111,7 +109,6 @@ router.delete("/:id", auth, async (req, res) => {
       const deleteResult = await s3.deleteObject(params).promise();
       console.log("S3 delete result:", deleteResult);
 
-      // Check if the file still exists in S3
       try {
         await s3.headObject(params).promise();
         console.error("File still exists in S3 after delete attempt:", s3Key);
@@ -129,7 +126,6 @@ router.delete("/:id", auth, async (req, res) => {
 
       console.log("File deleted from S3:", s3Key);
 
-      // Use deleteOne to remove the file document from MongoDB
       await File.deleteOne({ _id: req.params.id });
       console.log("File removed from database:", req.params.id);
 
@@ -153,8 +149,6 @@ router.put("/:id", auth, upload.single("file"), async (req, res) => {
     if (!file) {
       return res.status(404).send({ message: "File not found" });
     }
-
-    // If a new file is provided, upload it to S3 and delete the old one
     if (req.file) {
       const { originalname, buffer } = req.file;
 
@@ -165,8 +159,6 @@ router.put("/:id", auth, upload.single("file"), async (req, res) => {
       };
 
       uploadResult = await s3.upload(params).promise();
-
-      // Delete the old file from S3
       const oldS3Key = decodeURIComponent(file.url.split("/").pop());
       const deleteParams = {
         Bucket: process.env.AWS_BUCKET_NAME,
@@ -180,7 +172,6 @@ router.put("/:id", auth, upload.single("file"), async (req, res) => {
         console.error("Error deleting old file from S3:", s3Error);
       }
 
-      // Update file details
       file.url = uploadResult.Location;
       file.data = buffer;
     }
@@ -192,7 +183,6 @@ router.put("/:id", auth, upload.single("file"), async (req, res) => {
   } catch (error) {
     console.error("Error updating file:", error);
 
-    // Cleanup: delete the new file from S3 if there was an error
     if (uploadResult) {
       const params = {
         Bucket: process.env.AWS_BUCKET_NAME,

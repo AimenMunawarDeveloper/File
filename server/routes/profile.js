@@ -12,14 +12,13 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: "profile_photos",
-    format: async (req, file) => "png", // supports promises as well
+    format: async (req, file) => "png",
     public_id: (req, file) => `${Date.now()}-${file.originalname}`,
   },
 });
 
 const upload = multer({ storage: storage });
 
-// Get profile
 router.get("/", auth, async (req, res) => {
   try {
     console.log("Fetching profile for user:", req.user.userId);
@@ -44,7 +43,6 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-// Create or update profile
 router.post("/", auth, upload.single("photo"), async (req, res) => {
   try {
     console.log("Creating/updating profile for user:", req.user.userId);
@@ -70,15 +68,12 @@ router.post("/", auth, upload.single("photo"), async (req, res) => {
 
     if (req.file) {
       console.log("File uploaded:", req.file);
-      // The file upload is handled by multer-storage-cloudinary
-      // The resulting URL is in req.file.path
       req.body.photo = req.file.path;
     }
 
     if (profile) {
       console.log("Updating existing profile");
 
-      // Update fullName only if it's provided in the request body
       const updatedFields = req.body.fullName
         ? { ...req.body, fullName: req.body.fullName }
         : req.body;

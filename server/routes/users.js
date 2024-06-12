@@ -1,4 +1,3 @@
-// users.js
 const express = require("express");
 const router = express.Router();
 const { User, validate } = require("../models/userModel");
@@ -39,17 +38,16 @@ router.post("/", async (req, res) => {
       tenantId: defaultTenantId,
     }).save();
 
-    // Create default profile for the user
     const { firstName, lastName, email } = req.body;
     const fullName = `${firstName} ${lastName}`;
 
     const profile = new Profile({
       fullName,
-      phoneNumber: "", // Set default or leave empty as needed
+      phoneNumber: "",
       email,
-      username: "", // Set default or leave empty as needed
-      bio: "", // Set default or leave empty as needed
-      photo: "", // Set default or leave empty as needed
+      username: "",
+      bio: "",
+      photo: "",
       user: newUser._id,
       tenant: defaultTenantId,
     });
@@ -58,7 +56,6 @@ router.post("/", async (req, res) => {
     await profile.save();
     console.log("Created profile:", profile);
 
-    // Fetch the newly created profile and send it in the response
     const newProfile = await Profile.findOne({ user: newUser._id });
     if (!newProfile) {
       return res
@@ -68,7 +65,7 @@ router.post("/", async (req, res) => {
 
     res.status(201).send({ message: "User created successfully.", profile });
   } catch (error) {
-    console.error("Error creating user:", error); // Log the detailed error
+    console.error("Error creating user:", error);
     res.status(500).send({ message: "Internal Server Error." });
   }
 });
