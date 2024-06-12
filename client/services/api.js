@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://mern-vercel-sigma.vercel.app/api",
+  baseURL: "https://mern-vercel-sigma.vercel.app/api",
   headers: {
     Authorization: `Bearer ${localStorage.getItem("token")}`,
   },
