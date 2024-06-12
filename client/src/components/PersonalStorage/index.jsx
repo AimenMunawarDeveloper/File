@@ -24,7 +24,7 @@ const PersonalStorage = () => {
 
   const fetchFiles = async () => {
     try {
-      const { data } = await axios.get("http://localhost:8080/api/files", {
+      const { data } = await axios.get("http://mern-vercel-sigma.vercel.app/api/files", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -66,7 +66,7 @@ const PersonalStorage = () => {
     formData.append("name", fileName);
 
     try {
-      await axios.post("http://localhost:8080/api/files", formData, {
+      await axios.post("http://mern-vercel-sigma.vercel.app/api/files", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -85,7 +85,7 @@ const PersonalStorage = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:8080/api/files/${id}`, {
+      await axios.delete(`http://mern-vercel-sigma.vercel.app/api/files/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -113,7 +113,7 @@ const PersonalStorage = () => {
 
     try {
       await axios.put(
-        `http://localhost:8080/api/files/${editingFile._id}`,
+        `http://mern-vercel-sigma.vercel.app/api/files/${editingFile._id}`,
         formData,
         {
           headers: {

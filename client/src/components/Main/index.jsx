@@ -38,7 +38,7 @@ const Main = () => {
     const fetchStats = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:8080/api/files/stats", {
+        const response = await axios.get("http://mern-vercel-sigma.vercel.app/api/files/stats", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -54,7 +54,7 @@ const Main = () => {
         const token = localStorage.getItem("token");
         console.log("Fetching recent files with token:", token);
 
-        const response = await axios.get("http://localhost:8080/api/files", {
+        const response = await axios.get("http://mern-vercel-sigma.vercel.app/api/files", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -69,7 +69,7 @@ const Main = () => {
     const fetchProfileData = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:8080/api/profile', {
+        const response = await axios.get('http://mern-vercel-sigma.vercel.app/api/profile', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
