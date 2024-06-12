@@ -24,7 +24,7 @@ const PersonalStorage = () => {
 
   const fetchFiles = async () => {
     try {
-      const { data } = await axios.get("https://localhost:8080/api/files", {
+      const { data } = await axios.get("http://localhost:3000/api/files", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -66,7 +66,7 @@ const PersonalStorage = () => {
     formData.append("name", fileName);
 
     try {
-      await axios.post("https://localhost:8080/api/files", formData, {
+      await axios.post("http://localhost:3000/api/files", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -85,7 +85,7 @@ const PersonalStorage = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`https://localhost:8080/api/files/${id}`, {
+      await axios.delete(`http://localhost:3000/api/files/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -113,7 +113,7 @@ const PersonalStorage = () => {
 
     try {
       await axios.put(
-        `https://localhost:8080/api/files/${editingFile._id}`,
+        `http://localhost:3000/api/files/${editingFile._id}`,
         formData,
         {
           headers: {

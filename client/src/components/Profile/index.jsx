@@ -17,7 +17,7 @@ const Profile = () => {
 
   const fetchProfileData = async () => {
     try {
-      const response = await axios.get('https://localhost:8080/api/profile', {
+      const response = await axios.get('http://localhost:3000/api/profile', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -86,7 +86,7 @@ const Profile = () => {
       if (selectedFile) {
         formDataWithoutId.photo = selectedFile;
       }  
-      const response = await axios.post('https://localhost:8080/api/profile', formDataWithoutId, {
+      const response = await axios.post('http://localhost:3000/api/profile', formDataWithoutId, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
